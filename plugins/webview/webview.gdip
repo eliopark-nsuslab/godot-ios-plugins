@@ -1,0 +1,20 @@
+[config]
+name="webview"
+binary="webview.a"
+
+initialization="init_ios_webview"
+deinitialization="deinit_ios_webview"
+
+[dependencies]
+linked=[]
+embedded=[]
+system=["AVFoundation.framework", "WebKit.framework"]
+
+capabilities=[]
+
+files=[]
+
+linker_flags=[]
+
+[plist]
+

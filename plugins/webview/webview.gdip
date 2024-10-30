@@ -8,13 +8,13 @@ deinitialization="deinit_ios_webview"
 [dependencies]
 linked=[]
 embedded=[]
-system=["AVFoundation.framework", "WebKit.framework"]
+system=["Foundation.framework", "WebKit.framework", "UIKit.framework"]
 
 capabilities=[]
 
 files=[]
 
-linker_flags=[]
+linker_flags=[-ObjC]
 
 [plist]
 

@@ -7,7 +7,7 @@
 class IWebviewHandler
 {
 public:
-    virtual ~IWebviewHandler() = 0;
+    virtual ~IWebviewHandler() {}
     virtual void ProcessScriptMessage(const String& message) {}
     virtual bool HandleShouldOverrideUrlLoading(const String& Url) { return false; }
     virtual void HandleReceivedTitle(const String& Title) {}

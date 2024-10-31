@@ -12,6 +12,9 @@ NSString* ToNSString(const String& str) {
 NSURL* ToNSURL(const String& str) {
     return [NSURL URLWithString:ToNSString(str)];
 }
+
+#define LOG_D(msg) printf("%s[%d]" msg "\n",__FUNCTION__, __LINE__)
+#define LOG_V(fmt, ...) printf("%s[%d] " fmt "\n",__FUNCTION__, __LINE__, ##__VA_ARGS__)
 /**************************************************************************/
 class WebviewHandler : public IWebviewHandler
 {
@@ -36,6 +39,11 @@ public:
 WebviewPlugin* _singleton = nullptr;
 
 void WebviewPlugin::_bind_methods() {
+    ClassDB::bind_method(D_METHOD("Init", "name", "x", "y", "width", "height"), &WebviewPlugin::Init);
+    ClassDB::bind_method(D_METHOD("Load", "name", "url", "skipEncoding", "readAccessURL"), &WebviewPlugin::Load);
+    ClassDB::bind_method(D_METHOD("Reload", "name"), &WebviewPlugin::Reload);
+    ClassDB::bind_method(D_METHOD("Stop", "name"), &WebviewPlugin::Stop);
+    ClassDB::bind_method(D_METHOD("SetFrame", "name", "x", "y", "width", "height"), &WebviewPlugin::SetFrame);
 }
 
 WebviewPlugin *WebviewPlugin::get_singleton() {
@@ -56,9 +64,9 @@ void WebviewPlugin::Init(const String &name, int x, int y, int width, int height
         WebviewHandlerPtr handler(new WebviewHandler(this, name));
         [webview create:handler useTransparency:true];
         add_webview(name, webview);
-        print_line("WebviewPlugin::Create(%s)", name);
+        LOG_V("WebviewPlugin::Create(%s)", name.utf8().ptr());
     } else {
-        print_line("WebviewPlugin::Create(%s): alreay created", name);
+        LOG_V("WebviewPlugin::Create(%s): alreay created", name.utf8().ptr());
     }
 }
 
@@ -73,7 +81,7 @@ void WebviewPlugin::Destroy(const String& name) {
 void WebviewPlugin::Load(const String &name, const String &url, bool skipEncoding, const String &readAccessURL) {
     IOSWebViewWrapper* webview = get_webview(name);
     if (webview) {
-        [webview loadurl: ToNSURL(name)];
+        [webview loadurl: ToNSURL(url)];
     }
 }
 

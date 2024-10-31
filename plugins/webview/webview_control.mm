@@ -174,6 +174,7 @@
 
 -(void)loadurl:(NSURL*)InURL;
 {
+	NSLog(@"loadurl: %@", [InURL absoluteURL]);
 	dispatch_async(dispatch_get_main_queue(), ^
 	{
 		self.NextURL = InURL;

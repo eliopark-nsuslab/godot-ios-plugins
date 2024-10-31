@@ -1,5 +1,5 @@
 #include "webview_plugin.h"
-#include "webview_control.h"
+#include "webview_wrapper.h"
 #include "core/config/engine.h"
 
 #import <Foundation/Foundation.h>

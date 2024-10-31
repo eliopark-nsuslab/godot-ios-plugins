@@ -24,6 +24,15 @@ public:
 	void Init(const String& name, int x, int y, int width, int height);
 	void Destroy(const String& name);
 	void Load(const String& name, const String& url, bool skipEncoding, const String& readAccessURL);
+	void LoadHTMLString(const String& name, const String& html, const String& baseUrl, bool skipEncoding);
+	void Reload(const String& name);
+	void Stop(const String& name);
+	String GetUrl(const String& name);
+	void SetFrame(const String& name, int x, int y, int width, int height);
+	void SetPosition(const String& name, int x, int y);
+	void SetSize(const String& name, int width, int height);
+	bool Show(const String& name);
+	bool Hide(const String& name);
 
 private:
 	IOSWebViewWrapper* get_webview(const String& name);

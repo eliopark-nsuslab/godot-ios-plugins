@@ -41,9 +41,17 @@ WebviewPlugin* _singleton = nullptr;
 void WebviewPlugin::_bind_methods() {
     ClassDB::bind_method(D_METHOD("Init", "name", "x", "y", "width", "height"), &WebviewPlugin::Init);
     ClassDB::bind_method(D_METHOD("Load", "name", "url", "skipEncoding", "readAccessURL"), &WebviewPlugin::Load);
+    ClassDB::bind_method(D_METHOD("LoadHTMLString", "name", "html", "baseUrl", "skipEncoding"), &WebviewPlugin::LoadHTMLString);
     ClassDB::bind_method(D_METHOD("Reload", "name"), &WebviewPlugin::Reload);
     ClassDB::bind_method(D_METHOD("Stop", "name"), &WebviewPlugin::Stop);
     ClassDB::bind_method(D_METHOD("SetFrame", "name", "x", "y", "width", "height"), &WebviewPlugin::SetFrame);
+    ClassDB::bind_method(D_METHOD("Show", "name"), &WebviewPlugin::Show);
+    ClassDB::bind_method(D_METHOD("Hide", "name"), &WebviewPlugin::Hide);
+    ClassDB::bind_method(D_METHOD("EvaluateJavaScript", "name", "jsString", "identifier"), &WebviewPlugin::EvaluateJavaScript);
+    ClassDB::bind_method(D_METHOD("CanGoBack", "name"), &WebviewPlugin::CanGoBack);
+    ClassDB::bind_method(D_METHOD("CanGoForward", "name"), &WebviewPlugin::CanGoForward);
+    ClassDB::bind_method(D_METHOD("GoBack", "name"), &WebviewPlugin::GoBack);
+    ClassDB::bind_method(D_METHOD("GoForward", "name"), &WebviewPlugin::GoForward);
 }
 
 WebviewPlugin *WebviewPlugin::get_singleton() {
@@ -86,6 +94,10 @@ void WebviewPlugin::Load(const String &name, const String &url, bool skipEncodin
 }
 
 void WebviewPlugin::LoadHTMLString(const String &name, const String &html, const String &baseUrl, bool skipEncoding) {
+    IOSWebViewWrapper* webview = get_webview(name);
+    if (webview) {
+        [webview loadstring: ToNSString(html) dummyurl: ToNSURL(baseUrl)];
+    }
 }
 
 void WebviewPlugin::Reload(const String &name) {
@@ -125,16 +137,11 @@ void WebviewPlugin::SetFrame(const String &name, int x, int y, int width, int he
     }
 }
 
-void WebviewPlugin::SetPosition(const String &name, int x, int y) {
-}
-
-void WebviewPlugin::SetSize(const String &name, int width, int height) {
-}
-
 bool WebviewPlugin::Show(const String &name) {
     IOSWebViewWrapper* webview = get_webview(name);
     if (webview) {
         [webview setVisibility:true];
+        return true;
     }
 	return false;
 }
@@ -143,8 +150,46 @@ bool WebviewPlugin::Hide(const String &name) {
     IOSWebViewWrapper* webview = get_webview(name);
     if (webview) {
         [webview setVisibility:false];
+        return true;
     }
 	return false;
+}
+
+void WebviewPlugin::EvaluateJavaScript(const String &name, const String &jsString, const String &identifier) {
+    IOSWebViewWrapper* webview = get_webview(name);
+    if (webview) {
+        [webview executejavascript:ToNSString(jsString)];
+    }
+}
+
+bool WebviewPlugin::CanGoBack(const String &name) {
+	IOSWebViewWrapper* webview = get_webview(name);
+    if (webview) {
+        return [webview canGoBack];
+    }
+	return false;
+}
+
+bool WebviewPlugin::CanGoForward(const String &name) {
+	IOSWebViewWrapper* webview = get_webview(name);
+    if (webview) {
+        return [webview canGoForward];
+    }
+	return false;
+}
+
+void WebviewPlugin::GoBack(const String &name) {
+    IOSWebViewWrapper* webview = get_webview(name);
+    if (webview) {
+        [webview goBack];
+    }
+}
+
+void WebviewPlugin::GoForward(const String &name) {
+    IOSWebViewWrapper* webview = get_webview(name);
+    if (webview) {
+        [webview goForward];
+    }
 }
 
 /**************************************************************************/
